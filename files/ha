@@ -1,0 +1,8 @@
+/var/log/ha/*.log {
+        compress
+        ifempty
+        daily
+        rotate 7
+        nomissingok
+        dateext
+}

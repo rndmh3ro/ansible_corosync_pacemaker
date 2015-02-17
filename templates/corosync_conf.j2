@@ -1,0 +1,43 @@
+# Please read the corosync.conf.5 manual page
+compatibility: whitetank
+
+service {
+        name: pacemaker
+        # 1=CRM wird nicht über Corosync gesteuert
+        # 0=CRM wird über Corosync gesteuert
+        ver:  1
+}
+
+totem {
+        version: 2
+        secauth: on
+        # How many threads to use for encryption/decryption
+        threads: 8
+        interface {
+        {% for host in hosts %}
+        member {
+                memberaddr: {{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}
+                }
+        {% endfor %}
+
+        ringnumber: {{ringnumber}}
+        bindnetaddr: {{ansible_eth0.ipv4.network}}
+        ttl: 1
+        mcastport: 5405 # multicast-port and address is needed even when unicast is used
+        mcastaddr: 226.94.1.1
+    }
+        transport: udpu
+}
+
+logging {
+        fileline: off
+        to_stderr: yes
+        to_logfile: yes
+        logfile: /var/log/ha/corosync.log
+        to_syslog: no
+        # syslog_facility
+        # nur für Debugging auf ON
+        debug: off
+        timestamp: on
+
+}

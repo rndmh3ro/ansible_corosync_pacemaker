@@ -1,0 +1,23 @@
+---
+
+dependencies: []
+
+galaxy_info:
+  author: 'Sebastian Gumprich'
+  description: 'Install and configure Corosync and Pacemaker on RHEL6'
+  company: 'T-Systems MMS GmbH'
+  license: 'GPLv3'
+  min_ansible_version: '1.7.1'
+  platforms:
+    - name: Redhat
+      versions:
+        - 6
+  categories: [clustering, system]
+
+ansigenome_info:
+  galaxy_id: '10921'
+
+  travis: false
+
+  synopsis: |
+    Install and configure Corosync and Pacemaker on RHEL6

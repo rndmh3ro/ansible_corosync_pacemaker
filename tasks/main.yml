@@ -1,0 +1,43 @@
+---
+- name: install required packages
+  yum: name="{{item}}" state=installed
+  with_items:
+    - pacemaker
+    - corosync
+    - resource-agents
+    - crmsh-debuginfo
+    - crmsh-test
+    - crmsh
+
+- name: create corosync configuration
+  template: src="corosync_conf.j2" dest="/etc/corosync/corosync.conf" owner=root group=root
+  tags: config
+
+- name: create authkey on first host
+  command: "corosync-keygen"
+  when: first_node == ansible_nodename
+
+- name: fetch authkey from first host
+  fetch: src="/etc/corosync/authkey" dest="/tmp/" flat=yes
+  when: first_node == ansible_nodename
+
+- name: copy authkey to hosts
+  copy: src="/tmp/authkey" dest="/etc/corosync/" owner=root group=root mode=0400
+
+- name: delete local auth-key
+  ignore_errors: true
+  local_action: file path=/tmp/authkey state=absent
+
+- name: create logfile directory
+  file: dest="/var/log/ha" owner=root group=root mode=0750 state=directory
+  tags: logrotate
+
+- name: copy logrotate-configuration to hosts
+  copy: src="ha" dest="/etc/logrotate.d/ha"
+  tags: logrotate
+
+- name: enable autostart of services
+  service: name="{{item}}" enabled=yes started=yes
+  with_items:
+    - pacemaker
+    - corosync
