@@ -38,7 +38,7 @@ Example Playbook
 License
 -------
 
-GPLv3
+GPLv2
 
 Author Information
 ------------------
